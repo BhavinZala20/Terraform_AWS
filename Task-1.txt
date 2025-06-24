@@ -1,0 +1,22 @@
+Task - 1
+=====
+
+Set up a VPC network with 3 public subnets and 3 private subnets.
+Create separate route tables for public and private subnets.
+
+Set up one ECS cluster in private subnets. setup appropriate scaling at the cluster level and service level.
+Deploy any backend service which has simple GET, PUT, POST, and DELETE APIs in your ECS cluster. You need to create 2 containers of this backend service. One will run on EC2 and one will run on Fargate.
+These backend containers should be running behind aws ALB. All the GET requests should be forwarded to the container running on Fargate.
+Use RDS as the database service to store the data. RDS should be on private subnets.
+Use a private ECR registry to store the docker images.
+Service containers should use AWS Secret Manager to read database credentials.
+Set up a simple Frontend with the help of Cloudfront and S3. Frontend will use your backend APIs to interact with Database.
+Set up appropriate alerts and monitoring on your infra. Use AWS Cloudwatch to store backend service logs.
+Acceptance Criteria:
+ You should follow additional Security best practices (cloud as well as container images) while taking cloud infra cost into account.
+ Tag each cloud resource appropriately. (Name tag must be present).
+ The application should be running between 7:00 AM to 7:00 PM.
+ The database should have separate subnets.
+ Apply the lifecycle rule in the ECR repository to delete unwanted images.
+ =
+ 
