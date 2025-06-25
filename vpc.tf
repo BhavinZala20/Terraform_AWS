@@ -113,14 +113,35 @@ resource "aws_route_table_association" "private_association" {
 # A security group for Fargate tasks 
 resource "aws_security_group" "ecs_tasks" {
   name        = "ecs_tasks_sg"
-  vpc_id      = var.aws_vpc.main.id
+  vpc_id      = aws_vpc.main.id
   description = "Allow outbound traffic for ECS tasks"
+
+  ingress {
+    description = "Allow SSH from personal IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Replace with your IP
+  }
+
+  ingress {
+    description = "Allow all TCP traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = var.tag_name_for_project
+    Environment = var.tag_env_for_project
   }
 }
 
