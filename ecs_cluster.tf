@@ -34,7 +34,6 @@ data "aws_ami" "ecs" {
   }
 }
 
-
 resource "aws_instance" "ecs_instance" {
   ami                         = data.aws_ami.ecs.id # ✅ Use ECS-optimized AMI
   instance_type               = "t2.micro"
