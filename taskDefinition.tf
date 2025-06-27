@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "ec2" {
       portMappings = [
         {
           containerPort = var.ecs_task_definition_ec2_container_port,
-          hostPort      = 0,
+          hostPort      = var.ecs_task_definition_ec2_host_port,
           protocol      = "tcp"
         }
       ],

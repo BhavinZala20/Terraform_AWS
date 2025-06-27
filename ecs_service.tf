@@ -8,6 +8,12 @@ resource "aws_ecs_service" "ec2-service" {
   desired_count       = 2
   depends_on          = [aws_instance.ecs_instance]
 
+  load_balancer {
+    target_group_arn = aws_alb_target_group.ec2_target.arn
+    container_name   = "ec2_task"
+    container_port   = var.ecs_ec2_service_lb_containerPort
+  }
+
   tags = {
     Name        = var.tag_name_for_project
     Environment = var.tag_env_for_project

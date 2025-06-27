@@ -56,6 +56,11 @@ variable "ecs_task_definition_ec2_container_port" {
   description = "Container Port for ECS Task Definition"
 }
 
+variable "ecs_task_definition_ec2_host_port" {
+  type        = number
+  description = "Host Port for ECS Task Definition"
+}
+
 variable "ecs_ec2_memory" {
   type        = number
   description = "Memory for EC2 Launch Type"
@@ -74,4 +79,9 @@ variable "ecs_fargate_memory" {
 variable "ecs_fargate_cpu" {
   type        = number
   description = "CPU for the FARGATE Launch Type"
+}
+
+variable "ecs_ec2_service_lb_containerPort" {
+  type        = number
+  description = "ECS Service ALB Container Port"
 }
