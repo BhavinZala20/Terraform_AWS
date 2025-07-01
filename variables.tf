@@ -83,5 +83,35 @@ variable "ecs_fargate_cpu" {
 
 variable "ecs_ec2_service_lb_containerPort" {
   type        = number
-  description = "ECS Service ALB Container Port"
+  description = "ECS Service EC2 Container Port"
+}
+
+variable "ecs_task_definition_fargate_container_port" {
+  type        = number
+  description = "ECS Service FARGATE Container Port"
+}
+
+variable "allocated_storage" {
+  type        = number
+  description = "RDS DB storage "
+}
+
+variable "max_allocated_storage" {
+  type        = number
+  description = "Maximum Storage for RDS DB"
+}
+
+variable "engine" {
+  type        = string
+  description = "Database Engine"
+}
+
+variable "engine_version" {
+  type        = number
+  description = "Database Engine Version"
+}
+
+variable "instance_class" {
+  type        = string
+  description = "Instance Class for DB Engine"
 }

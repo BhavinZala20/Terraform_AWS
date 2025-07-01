@@ -20,23 +20,32 @@ resource "aws_ecs_service" "ec2-service" {
   }
 }
 
-# resource "aws_ecs_service" "fargate_service" {
-#   name            = "Fargate_Service"
-#   cluster         = aws_ecs_cluster.backend_cluster.id
-#   task_definition = aws_ecs_task_definition.fargate.arn
-#   launch_type     = "FARGATE"
-#   desired_count   = 1
+# ECS Service for FARGATE
+resource "aws_ecs_service" "fargate_service" {
+  name            = "Fargate_Service"
+  cluster         = aws_ecs_cluster.backend_cluster.id
+  task_definition = aws_ecs_task_definition.fargate.arn
+  launch_type     = "FARGATE"
+  desired_count   = 2
 
-#   network_configuration {
-#     subnets          = var.private_subnet_cidrs
-#     assign_public_ip = false
-#     security_groups  = [aws_security_group.ecs_tasks.id]
-#   }
+  network_configuration {
+    subnets          = aws_subnet.private.*.id
+    assign_public_ip = false
+    security_groups  = [aws_security_group.ecs_tasks.id]
+  }
 
-#   tags = {
-#     Name        = var.tag_name_for_project
-#     Environment = var.tag_env_for_project
-#   }
-# }
+  load_balancer {
+    target_group_arn = aws_alb_target_group.fargate_target.arn
+    container_name   = "fargate_task"
+    container_port   = var.ecs_task_definition_fargate_container_port
+  }
+  # depends_on = [aws_alb_listener.front_end]
+
+  tags = {
+    Name        = var.tag_name_for_project
+    Environment = var.tag_env_for_project
+  }
+}
+
 
 

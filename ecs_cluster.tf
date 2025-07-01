@@ -16,7 +16,7 @@ resource "aws_ecs_cluster" "backend_cluster" {
 
 resource "aws_ecs_cluster_capacity_providers" "capacity" {
   cluster_name       = aws_ecs_cluster.backend_cluster.name
-  capacity_providers = ["FARGATE", "FARGATE_SPOT", "EC2"]
+  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
 }
 
 data "aws_ami" "ecs" {
@@ -52,6 +52,7 @@ resource "aws_instance" "ecs_instance" {
     Name = "ecs-instance"
   }
 }
+
 
 
 

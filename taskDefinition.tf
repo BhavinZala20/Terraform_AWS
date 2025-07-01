@@ -21,6 +21,12 @@ resource "aws_ecs_task_definition" "ec2" {
       ],
       memory = var.ecs_ec2_memory,
       cpu    = var.ecs_ec2_cpu
+
+      # secrets = [{
+      #   name      = "admin"
+      #   valueFrom = data.aws_secretsmanager_secret.by-name.arn
+      #   valueFrom = data.aws_secretsmanager_secret_version.secret.arn
+      # }]
     }
   ])
 
@@ -30,25 +36,31 @@ resource "aws_ecs_task_definition" "ec2" {
   }
 }
 
-# # This Task Definition is for FARGATE launch type
-# resource "aws_ecs_task_definition" "fargate" {
-#   family                   = "test"
-#   requires_compatibilities = ["FARGATE"]
-#   network_mode             = "awsvpc"
-#   cpu                      = var.ecs_fargate_cpu
-#   memory                   = var.ecs_fargate_memory
-#   container_definitions    = <<TASK_DEFINITION
-#   [
-#     {
-#       "name": "farget_task",
-#       "image": "${aws_ecr_repository.main.repository_url}",
-#       "cpu": "${var.ecs_fargate_cpu}",
-#       "memory": "${var.ecs_fargate_memory}",
-#       "essential": true
-#     }
-#   ]
-#     TASK_DEFINITION
-# }
+# Task Definition for the FARGATE Launch Type
+resource "aws_ecs_task_definition" "fargate" {
+  family                   = "fargate-service"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = var.ecs_fargate_cpu
+  memory                   = var.ecs_fargate_memory
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
 
+  container_definitions = jsonencode([{
+    name      = "fargate_task"
+    image     = "nginx"
+    essential = true
+    portMappings = [{
+      containerPort = var.ecs_task_definition_fargate_container_port
+      protocol      = "tcp"
+    }]
+    cpu    = var.ecs_fargate_cpu
+    memory = var.ecs_fargate_memory
+  }])
+
+  tags = {
+    Name        = var.tag_name_for_project
+    Environment = var.tag_env_for_project
+  }
+}
 
 
