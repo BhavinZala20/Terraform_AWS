@@ -84,7 +84,7 @@ resource "aws_nat_gateway" "natgw" {
     Environment = var.tag_env_for_project
   }
 
-  depends_on = [aws_internet_gateway.igw]
+  # depends_on = [aws_internet_gateway.igw]
 }
 
 # Private Route Table
@@ -121,7 +121,7 @@ resource "aws_security_group" "ecs_tasks" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Replace with your IP
+    cidr_blocks = ["14.99.102.226/32"] # Replace with your IP
   }
 
   ingress {

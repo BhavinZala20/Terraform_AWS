@@ -69,8 +69,8 @@ resource "aws_alb_listener_rule" "fargate_rule" {
   }
 
   condition {
-    http_request_method {
-      values = ["GET"]
+    path_pattern {
+      values = ["/apache*"]
     }
   }
 
@@ -79,6 +79,7 @@ resource "aws_alb_listener_rule" "fargate_rule" {
     Environment = var.tag_env_for_project
   }
 }
+
 
 # Target Group for EC2 
 resource "aws_alb_target_group" "ec2_target" {
@@ -108,9 +109,14 @@ resource "aws_alb_target_group" "ec2_target" {
 }
 
 # Attach EC2 with Target Group
-resource "aws_alb_target_group_attachment" "main" {
-  target_group_arn = aws_alb_target_group.ec2_target.arn
-  target_id        = aws_instance.ecs_instance.id
+# resource "aws_alb_target_group_attachment" "main" {
+#   target_group_arn = aws_alb_target_group.ec2_target.arn
+#   target_id        = aws_instance.ecs_instance.id
+# }
+
+resource "aws_autoscaling_attachment" "asg_attachment" {
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  lb_target_group_arn    = aws_alb_target_group.ec2_target.arn
 }
 
 # Target Group for FARGATE Launch Type

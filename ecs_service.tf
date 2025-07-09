@@ -1,3 +1,17 @@
+data "aws_ami" "ecs" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
 
 resource "aws_ecs_service" "ec2-service" {
   name                = "Backend_Service"
@@ -6,7 +20,7 @@ resource "aws_ecs_service" "ec2-service" {
   launch_type         = "EC2"
   scheduling_strategy = "REPLICA"
   desired_count       = 2
-  depends_on          = [aws_instance.ecs_instance]
+  # depends_on          = [aws_instance.ecs_instance]
 
   load_balancer {
     target_group_arn = aws_alb_target_group.ec2_target.arn
@@ -20,7 +34,6 @@ resource "aws_ecs_service" "ec2-service" {
   }
 }
 
-# ECS Service for FARGATE
 resource "aws_ecs_service" "fargate_service" {
   name            = "Fargate_Service"
   cluster         = aws_ecs_cluster.backend_cluster.id
@@ -39,7 +52,6 @@ resource "aws_ecs_service" "fargate_service" {
     container_name   = "fargate_task"
     container_port   = var.ecs_task_definition_fargate_container_port
   }
-  # depends_on = [aws_alb_listener.front_end]
 
   tags = {
     Name        = var.tag_name_for_project
