@@ -14,8 +14,10 @@ resource "aws_ecs_task_definition" "ec2" {
       portMappings = [
         {
           containerPort = var.ecs_task_definition_ec2_container_port,
-          hostPort      = var.ecs_task_definition_ec2_host_port,
-          protocol      = "tcp"
+          # containerPort = 80,
+          # hostPort      = 80,
+          hostPort = var.ecs_task_definition_ec2_host_port,
+          protocol = "tcp"
         }
       ],
       memory = var.ecs_ec2_memory,
@@ -47,7 +49,7 @@ resource "aws_ecs_task_definition" "fargate" {
     [
       {
         name      = "fargate_task"
-        image     = "httpd"
+        image     = "nginx"
         essential = true
         portMappings = [
           {

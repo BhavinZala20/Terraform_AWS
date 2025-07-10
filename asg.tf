@@ -23,14 +23,16 @@ resource "aws_launch_template" "template" {
   image_id               = data.aws_ami.ecs.id
   vpc_security_group_ids = [aws_security_group.ecs_tasks.id]
   depends_on             = [aws_nat_gateway.natgw]
-  user_data              = <<-EOF
-              #!/bin/bash
-              echo "ECS_CLUSTER=Backend_ecs_cluster" >> /etc/ecs/ecs.config
-            EOF
 
-  network_interfaces {
-    associate_public_ip_address = false
-  }
+  user_data = base64encode(<<-EOF
+  #!/bin/bash
+  echo "ECS_CLUSTER=Backend_ecs_cluster" >> /etc/ecs/ecs.config
+  EOF
+  )
+
+  # network_interfaces {
+  #   security_groups = [aws_security_group.alb.id]
+  # }
 
   placement {
     availability_zone = var.azs[0]

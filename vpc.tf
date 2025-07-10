@@ -19,7 +19,7 @@ resource "aws_subnet" "public" {
   availability_zone = var.azs[count.index]
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Public_Subnet"
     Environment = var.tag_env_for_project
   }
 }
@@ -29,7 +29,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-IGW"
     Environment = var.tag_env_for_project
   }
 }
@@ -43,7 +43,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Public_rt"
     Environment = var.tag_env_for_project
   }
 }
@@ -63,7 +63,7 @@ resource "aws_subnet" "private" {
   availability_zone = var.azs[count.index]
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Private_Subnet"
     Environment = var.tag_env_for_project
   }
 }
@@ -97,7 +97,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Private_rt"
     Environment = var.tag_env_for_project
   }
 }
@@ -126,8 +126,8 @@ resource "aws_security_group" "ecs_tasks" {
 
   ingress {
     description = "Allow all TCP traffic"
-    from_port   = 80
-    to_port     = 80
+    from_port   = 0
+    to_port     = 65535
     protocol    = "tcp"
     # cidr_blocks = ["0.0.0.0/0"]
     security_groups = [aws_security_group.alb.id]

@@ -1,15 +1,13 @@
+data "aws_ssm_parameter" "ecs_ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+}
+
 data "aws_ami" "ecs" {
   most_recent = true
   owners      = ["amazon"]
-
   filter {
-    name   = "name"
-    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+    name   = "image-id"
+    values = [data.aws_ssm_parameter.ecs_ami.value]
   }
 }
 
