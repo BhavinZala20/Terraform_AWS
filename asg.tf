@@ -25,9 +25,9 @@ resource "aws_launch_template" "template" {
   depends_on             = [aws_nat_gateway.natgw]
 
   user_data = base64encode(<<-EOF
-  #!/bin/bash
-  echo "ECS_CLUSTER=Backend_ecs_cluster" >> /etc/ecs/ecs.config
-  EOF
+            #!/bin/bash
+            echo "ECS_CLUSTER=Backend_ecs_cluster" >> /etc/ecs/ecs.config
+            EOF
   )
 
   # network_interfaces {

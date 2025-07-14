@@ -108,7 +108,7 @@ variable "engine" {
 }
 
 variable "engine_version" {
-  type        = number
+  type        = string
   description = "Database Engine Version"
 }
 
@@ -174,9 +174,9 @@ variable "ec2_health_check_interval" {
   type = number
 }
 
-variable "ec2_health_check_port" {
-  type = number
-}
+# variable "ec2_health_check_port" {
+#   type = number
+# }
 
 variable "ec2_health_check_protocol" {
   type = string
