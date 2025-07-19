@@ -19,40 +19,6 @@ resource "aws_ecs_cluster_capacity_providers" "capacity" {
   capacity_providers = ["FARGATE", "FARGATE_SPOT"]
 }
 
-data "aws_ami" "ecs" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-
-resource "aws_instance" "ecs_instance" {
-  ami                         = data.aws_ami.ecs.id # ✅ Use ECS-optimized AMI
-  instance_type               = "t2.micro"
-  key_name                    = "terraform-key"
-  subnet_id                   = aws_subnet.private[0].id
-  associate_public_ip_address = true
-  iam_instance_profile        = aws_iam_instance_profile.ecs_instance_profile.name
-  vpc_security_group_ids      = [aws_security_group.ecs_tasks.id]
-  depends_on                  = [aws_nat_gateway.natgw]
-  user_data                   = <<-EOF
-              #!/bin/bash
-              echo "ECS_CLUSTER=Backend_ecs_cluster" >> /etc/ecs/ecs.config
-            EOF
-
-  tags = {
-    Name = "ecs-instance"
-  }
-}
-
 
 
 

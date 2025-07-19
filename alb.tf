@@ -1,8 +1,3 @@
-# data "aws_ip_ranges" "cloudfront" {
-#   services = ["CLOUDFRONT"]
-#   regions  = ["GLOBAL"]
-# }
-
 # Security Group for the Application Load Balancer
 resource "aws_security_group" "alb" {
   name        = "Security Group for ALB"
@@ -14,8 +9,6 @@ resource "aws_security_group" "alb" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    # cidr_blocks = data.aws_ip_ranges.cloudfront.cidr_blocks
-    # cloudfront incoming traffic
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -95,7 +88,7 @@ resource "aws_alb_target_group" "ec2_target" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     interval            = 60
-    port                = 80
+    port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 30
   }
@@ -105,12 +98,6 @@ resource "aws_alb_target_group" "ec2_target" {
     Environment = var.tag_env_for_project
   }
 
-}
-
-# Attach EC2 with Target Group
-resource "aws_alb_target_group_attachment" "main" {
-  target_group_arn = aws_alb_target_group.ec2_target.arn
-  target_id        = aws_instance.ecs_instance.id
 }
 
 # Target Group for FARGATE Launch Type

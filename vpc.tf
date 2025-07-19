@@ -19,7 +19,7 @@ resource "aws_subnet" "public" {
   availability_zone = var.azs[count.index]
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Public_Subnet"
     Environment = var.tag_env_for_project
   }
 }
@@ -29,7 +29,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-IGW"
     Environment = var.tag_env_for_project
   }
 }
@@ -43,7 +43,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Public_rt"
     Environment = var.tag_env_for_project
   }
 }
@@ -63,7 +63,7 @@ resource "aws_subnet" "private" {
   availability_zone = var.azs[count.index]
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Private_Subnet"
     Environment = var.tag_env_for_project
   }
 }
@@ -84,7 +84,7 @@ resource "aws_nat_gateway" "natgw" {
     Environment = var.tag_env_for_project
   }
 
-  depends_on = [aws_internet_gateway.igw]
+  # depends_on = [aws_internet_gateway.igw]
 }
 
 # Private Route Table
@@ -97,7 +97,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name        = var.tag_name_for_project
+    Name        = "${var.tag_name_for_project}-Private_rt"
     Environment = var.tag_env_for_project
   }
 }
@@ -121,13 +121,22 @@ resource "aws_security_group" "ecs_tasks" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Replace with your IP
+    cidr_blocks = ["14.99.102.226/32"] # Replace with your IP
   }
 
   ingress {
-    description = "Allow all TCP traffic"
-    from_port   = 80
-    to_port     = 80
+    description     = "Allow traffic from ALB on ephemeral ports"
+    from_port       = 32768
+    to_port         = 65535
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  # Allow traffic from ALB on container port (for health checks)
+  ingress {
+    description = "Allow TCP traffic"
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
     # cidr_blocks = ["0.0.0.0/0"]
     security_groups = [aws_security_group.alb.id]

@@ -107,11 +107,116 @@ variable "engine" {
 }
 
 variable "engine_version" {
-  type        = number
+  type        = string
   description = "Database Engine Version"
 }
 
 variable "instance_class" {
   type        = string
   description = "Instance Class for DB Engine"
+}
+
+variable "alb_sg_from_port" {
+  type        = number
+  description = "Ingress port for ALB sg"
+}
+
+variable "alb_sg_to_port" {
+  type        = number
+  description = "Ingress port for ALB sg"
+}
+
+variable "alg_sg_protocol" {
+  type        = string
+  description = "Protocol for ALG sg"
+}
+
+variable "alb_listener_port" {
+  type        = number
+  description = "Listener port for ALB"
+}
+
+variable "alb_listener_protocol" {
+  type        = string
+  description = "Protocol for ALB Listener"
+}
+
+variable "alb_target_group_port" {
+  type        = number
+  description = "Target Group Port Number"
+}
+
+variable "alb_target_group_protocol" {
+  type        = string
+  description = "Target Group Protocol"
+}
+
+variable "alb_dereg_delay" {
+  type        = number
+  description = "Deregistration Delay"
+}
+
+variable "alb_target_type" {
+  type        = string
+  description = "Target Type for EC2 Target Group"
+}
+
+variable "ec2_alb_healthy_threshold" {
+  type = number
+}
+
+variable "ec2_alb_unhealthy_threshold" {
+  type = number
+}
+
+variable "ec2_health_check_interval" {
+  type = number
+}
+
+# variable "ec2_health_check_port" {
+#   type = number
+# }
+
+variable "ec2_health_check_protocol" {
+  type = string
+}
+
+variable "ec2_health_check_timeout" {
+  type = number
+}
+
+variable "fargate_tg_port" {
+  type = number
+}
+
+variable "fargate_tg_protocol" {
+  type = string
+}
+
+variable "fargate_tg_targate_type" {
+  type = string
+}
+
+variable "fargate_tg_dereg_delay" {
+  type = number
+}
+
+variable "fargate_health_check_healthy_threshold" {
+  type = number
+}
+
+variable "fargate_health_check_unhealthy_threshold" {
+  type = number
+}
+
+variable "fargate_health_check_interval" {
+  type = number
+}
+
+variable "fargate_health_check_timeout" {
+  type = number
+}
+
+variable "fargate_health_check_protocol" {
+  type = string
 }

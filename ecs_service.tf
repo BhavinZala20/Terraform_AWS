@@ -1,3 +1,15 @@
+data "aws_ssm_parameter" "ecs_ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+}
+
+data "aws_ami" "ecs" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "image-id"
+    values = [data.aws_ssm_parameter.ecs_ami.value]
+  }
+}
 
 resource "aws_ecs_service" "ec2-service" {
   name                = "Backend_Service"
@@ -6,12 +18,12 @@ resource "aws_ecs_service" "ec2-service" {
   launch_type         = "EC2"
   scheduling_strategy = "REPLICA"
   desired_count       = 2
-  depends_on          = [aws_instance.ecs_instance]
+  # depends_on          = [aws_instance.ecs_instance]
 
   load_balancer {
     target_group_arn = aws_alb_target_group.ec2_target.arn
     container_name   = "ec2_task"
-    container_port   = var.ecs_ec2_service_lb_containerPort
+    container_port   = var.ecs_task_definition_ec2_container_port
   }
 
   tags = {
